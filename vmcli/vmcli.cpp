@@ -35,7 +35,6 @@ void WaitForUpdate()
 
 int GetParameterFloat(char* param, float* cur)
 {
-	WaitForUpdate();
 	return iVMR.VBVMR_GetParameterFloat(param, cur);
 }
 
@@ -67,12 +66,12 @@ int runCommand(char cmdChar[])
 		if (round(cur) == 1)
 		{
 			std::cout << "toggling " << param << " to 0\n";
-			std::cout << SetParameterFloat(param, 0.0f);
+			SetParameterFloat(param, 0.0f);
 		}
 		else if (round(cur) == 0)
 		{
 			std::cout << "toggling " << param << " to 1\n";
-			std::cout << SetParameterFloat(param, 1.0f);
+			SetParameterFloat(param, 1.0f);
 		}
 		return TRUE;
 	}
@@ -104,6 +103,7 @@ int initVoicemeeter()
 		return FALSE;
 	}
 	return TRUE;
+	WaitForUpdate();
 }
 
 /*******************************************************************************/
