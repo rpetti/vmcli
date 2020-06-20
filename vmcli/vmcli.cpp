@@ -15,7 +15,7 @@ int main(int argc, char * argv[])
 	int rep = initVoicemeeter();
 	if (!rep)
 	{
-		return FALSE;
+		return -1;
 	}
 	for (int i = 1; i < argc; i++)
 	{
