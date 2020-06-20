@@ -1,5 +1,9 @@
 # vmcli
 
+## License
+
+This is for free non-commercial or educational use only. Please see https://www.vb-audio.com/Services/developers.htm for more information on the license restrictions regarding the VoiceMeeterRemote API that is used by this project.
+
 ## Usage
 
 This tool allows you to set different VoiceMeeter properties from the command line:
