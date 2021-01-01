@@ -30,6 +30,10 @@ void WaitForUpdate()
 	{
 		Sleep(50);
 	}
+	while (iVMR.VBVMR_IsParametersDirty())
+	{
+		Sleep(50);
+	}
 	Sleep(50);
 }
 
