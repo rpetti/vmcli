@@ -56,6 +56,22 @@ int SetParameters(char* param)
 	return ret;
 }
 
+int GetParameters(char* param, char* output)
+{
+	int ret = iVMR.VBVMR_GetParameterStringA(param, output);
+	if (ret != 0)
+	{
+		float val;
+		ret = GetParameterFloat(param, &val);
+		if (ret != 0)
+		{
+			return ret;
+		}
+		snprintf(output, sizeof output, "%f", val);
+	}
+	return ret;
+}
+
 int runCommand(char cmdChar[])
 {
 	// !Parameter - Toggle value
@@ -79,10 +95,28 @@ int runCommand(char cmdChar[])
 		}
 		return TRUE;
 	}
-	// pass through the rest
+	// If we aren't setting, get it instead
 	char* paramline = const_cast<char*>(cmd.c_str());
-	std::cout << "passing through " << paramline << "\n";
-	SetParameters(paramline);
+	found = cmd.find("=");
+	if (found == std::string::npos)
+	{
+		char* value = new char[1024];
+		if (GetParameters(paramline, value) == 0)
+		{
+			std::cout << cmd << "=" << value << "\n";
+		}
+		else
+		{
+			std::cerr << "error getting " << paramline << "\n";
+		}
+		delete[] value;
+	}
+	else
+	{
+		// set the rest
+		std::cout << "setting " << paramline << "\n";
+		SetParameters(paramline);
+	}
 }
 
 int initVoicemeeter()

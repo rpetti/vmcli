@@ -16,32 +16,45 @@ The properties are described in the API documentation [here](https://download.vb
 
 ## Examples
 
-Setting the gain of the first input to 0:
+### Setting the gain of the first input to 0:
 
 ```
 vmcli Strip[0].Gain=0
 ```
 
-Increasing the gain by 10:
+### Increasing the gain by 10:
 
 ```
 vmcli Strip[0].Gain+=10
 ```
 
-Decreasing the gain by 10:
+### Decreasing the gain by 10:
 
 ```
 vmcli Strip[0].Gain-=10
 ```
 
-Toggling properties:
+### Toggling properties:
 
 ```
 vmcli !Strip[0].Mute
 ```
 
-Multiple settings can be changed at once:
+### Multiple settings can be changed at once:
 
 ```
 vmcli Strip[0].Mute=0 Strip[0].Gain=10 Strip[1].Mute=1
 ```
+
+### Getting values:
+
+```
+vmcli Strip[0].Gain
+```
+
+Result:
+
+```
+Strip[0].Gain=0.000
+```
+
