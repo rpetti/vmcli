@@ -2,6 +2,8 @@
 
 void WaitForUpdate();
 
+void WaitForUpdateRead();
+
 int GetParameterFloat(char* param, float* cur);
 
 int SetParameterFloat(char* param, float val);

@@ -38,10 +38,19 @@ void WaitForUpdate()
 	Sleep(50);
 }
 
-
+void WaitForUpdateRead()
+{
+	// Has any parameter been changed through Voicemeeter user interface or by another client application?
+	
+	while (iVMR.VBVMR_IsParametersDirty())
+	{
+				Sleep(50);
+	}
+	Sleep(50);
+}
 int GetParameterFloat(char* param, float* cur)
 {
-	WaitForUpdate();
+	WaitForUpdateRead();
 	return iVMR.VBVMR_GetParameterFloat(param, cur);
 }
 
@@ -61,7 +70,11 @@ int SetParameters(char* param)
 
 int GetParameters(char* param, char* output)
 {
-	WaitForUpdate();
+	WaitForUpdateRead();
+	Sleep(50);
+	WaitForUpdateRead(); // Must call twice to update/get value.
+	
+	
 	int ret = iVMR.VBVMR_GetParameterStringA(param, output);
 	if (ret != 0)
 	{
