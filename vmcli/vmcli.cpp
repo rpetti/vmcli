@@ -295,8 +295,9 @@ long InitializeDLLInterfaces(void)
 	iVMR.VBVMR_GetVoicemeeterVersion = (T_VBVMR_GetVoicemeeterVersion)GetProcAddress(G_H_Module, "VBVMR_GetVoicemeeterVersion");
 
 	iVMR.VBVMR_IsParametersDirty = (T_VBVMR_IsParametersDirty)GetProcAddress(G_H_Module, "VBVMR_IsParametersDirty");
+
 	iVMR.VBVMR_GetParameterFloat = (T_VBVMR_GetParameterFloat)GetProcAddress(G_H_Module, "VBVMR_GetParameterFloat");
-	iVMR.VBVMR_MacroButton_IsDirty = (T_VBVMR_MacroButton_IsDirty)GetProcAddress(G_H_Module, "VBVMR_MacroButton_IsDirty");
+	
 
 	iVMR.VBVMR_GetParameterStringA = (T_VBVMR_GetParameterStringA)GetProcAddress(G_H_Module, "VBVMR_GetParameterStringA");
 	iVMR.VBVMR_GetParameterStringW = (T_VBVMR_GetParameterStringW)GetProcAddress(G_H_Module, "VBVMR_GetParameterStringW");
@@ -329,6 +330,7 @@ long InitializeDLLInterfaces(void)
 	if (iVMR.VBVMR_GetVoicemeeterType == NULL) return -3;
 	if (iVMR.VBVMR_GetVoicemeeterVersion == NULL) return -4;
 	if (iVMR.VBVMR_IsParametersDirty == NULL) return -5;
+	
 	if (iVMR.VBVMR_GetParameterFloat == NULL) return -6;
 	if (iVMR.VBVMR_GetParameterStringA == NULL) return -7;
 	if (iVMR.VBVMR_GetParameterStringW == NULL) return -8;
@@ -346,7 +348,7 @@ long InitializeDLLInterfaces(void)
 	if (iVMR.VBVMR_Input_GetDeviceNumber == NULL) return -33;
 	if (iVMR.VBVMR_Input_GetDeviceDescA == NULL) return -34;
 	if (iVMR.VBVMR_Input_GetDeviceDescW == NULL) return -35;
-	if (iVMR.VBVMR_IsParametersDirty == NULL) return -36;
+
 
 
 #ifdef VMR_INCLUDE_AUDIO_PROCESSING_EXAMPLE
