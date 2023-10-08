@@ -1,22 +1,20 @@
 /******************************************************************************/
-/* Voicemeeter Remote API.                                       V.Burel©2015 */
+/* Voicemeeter Remote API.                                  V.Burel©2015-2021 */
 /******************************************************************************/
-/* This Library allows communication with Voicemeeter Applications            */
+/* This Library allows communication with Voicemeeter applications            */
 /* 4 Client Applications can be connected to remote Voicemeeter.              */
+/* it also allows communication with MacroButtons application.                */
 /******************************************************************************/
 /*                                                                            */
 /*                  OFFICIAL LINK : WWW.VOICEMEETER.COM                       */
 /*                                                                            */
 /******************************************************************************/
-/* COPYRIGHT: Vincent Burel(c)2015 All Rights Reserved                        */
+/* COPYRIGHT: Vincent Burel(c)2015-2021 All Rights Reserved                   */
 /******************************************************************************/
-/* LICENSING: This header file and VoicemeeterRemote.dll are made available   */
-/*            for evaluation and testing purpose only (to make demo and proof */
-/*            of concept).                                                    */
 /*                                                                            */
-/*            for any commercial exploitation or to get specific support,     */
-/*            a commercial license needs to be purchased. thanks to contact   */
-/*            us by e-mail (get our contact on www.vb-audio.com).             */
+/*  LICENSING: VoicemeeterRemote.dll usage is driven by a license agreement   */
+/*             given in VoicemeeterRemoteAPI.pdf or readme.txt                */
+/*                                                                            */
 /******************************************************************************/
 /* long = 32 bit integer                                                      */
 /******************************************************************************/
@@ -61,9 +59,10 @@ long __stdcall VBVMR_Logout(void);
 
 	/** 
 	@brief Run Voicemeeter Application (get installation directory and run Voicemeeter Application).
-	@param vType : Voicemeeter type (1 = Voicemeeter, 2= Voicemeeter Banana).
+	@param vType : Voicemeeter type  (1 = Voicemeeter, 2= Voicemeeter Banana, 3= Voicemeeter Potato, 6 = Potato x64 bits).
 	@return :	 0: Ok.
-				-1: not installed
+				-1: not installed (UninstallString not found in registry).
+				-2: unknown vType number
 	*/
 
 long __stdcall VBVMR_RunVoicemeeter(long vType);
@@ -92,7 +91,7 @@ long __stdcall VBVMR_RunVoicemeeter(long vType);
 
 	/** 
 	@brief Get Voicemeeter Type
-	@param pType : Pointer on 32bit long receiving the type (1 = Voicemeeter, 2= Voicemeeter Banana).
+	@param pType : Pointer on 32bit long receiving the type (1 = Voicemeeter, 2= Voicemeeter Banana, 3 Potato).
 
 				 VOICEMEETER STRIP/BUS INDEX ASSIGNMENT
 
@@ -700,6 +699,66 @@ long __stdcall VBVMR_AudioCallbackUnregister(void);
 
 
 
+/******************************************************************************/
+/*                                                                            */
+/*                                Macro Buttons                               */
+/*                                                                            */
+/******************************************************************************/
+
+/** @name Macro Buttons functions
+* @{ */
+
+	/** 
+	@brief  Check if Macro Buttons states changed.
+			Call this function periodically (typically every 50 or 500ms) to know if something happen on MacroButton states .
+			(this function must be called from one thread only)
+					
+	@return:	 0: no new status.
+				>0: last nu logical button status changed.
+				-1: error (unexpected)
+				-2: no server.
+	*/
+
+long __stdcall VBVMR_MacroButton_IsDirty(void);
+
+	/** 
+	@brief get current status of a given button.
+	@param nuLogicalButton : button index: 0 to 79)
+	@param pValue : Pointer on float (32bit float by reference) receiving the wanted value (0.0 = OFF / 1.0 = ON).
+	@param bitmode: define what kind of value you want to read (see MACROBUTTON_MODE below)
+	@return :	 0: OK (no error).
+				-1: error
+				-2: no server.
+				-3: unknown parameter
+				-5: structure mismatch
+	*/
+
+long __stdcall VBVMR_MacroButton_GetStatus(long nuLogicalButton, float * pValue, long bitmode);
+
+	/** 
+	@brief set current button value.
+	@param nuLogicalButton : button index: 0 to 79)
+	@param fValue : float 32 bit value giving the status (0.0 = OFF / 1.0 = ON).
+	@param bitmode: define what kind of value you want to write/modify (see MACROBUTTON_MODE below)
+	@return :	 0: OK (no error).
+				-1: error
+				-2: no server.
+				-3: unknown parameter
+				-5: structure mismatch
+	*/
+
+long __stdcall VBVMR_MacroButton_SetStatus(long nuLogicalButton, float fValue, long bitmode);
+
+#define VBVMR_MACROBUTTON_MODE_DEFAULT		0x00000000	//PUSH or RELEASE button 
+#define VBVMR_MACROBUTTON_MODE_STATEONLY	0x00000002	//change Displayed State only
+#define VBVMR_MACROBUTTON_MODE_TRIGGER		0x00000003	//change Trigger State
+
+
+
+/** @}  */
+
+
+
 
 
 
@@ -744,6 +803,11 @@ typedef long (__stdcall *T_VBVMR_AudioCallbackStart)(void);
 typedef long (__stdcall *T_VBVMR_AudioCallbackStop)(void);
 typedef long (__stdcall *T_VBVMR_AudioCallbackUnregister)(void);
 
+typedef long (__stdcall *T_VBVMR_MacroButton_IsDirty)(void);
+typedef long (__stdcall *T_VBVMR_MacroButton_GetStatus)(long nuLogicalButton, float * pValue, long bitmode);
+typedef long (__stdcall *T_VBVMR_MacroButton_SetStatus)(long nuLogicalButton, float fValue, long bitmode);
+
+
 
 typedef struct tagVBVMR_INTERFACE
 {
@@ -778,6 +842,10 @@ typedef struct tagVBVMR_INTERFACE
 	T_VBVMR_AudioCallbackStop		VBVMR_AudioCallbackStop;
 	T_VBVMR_AudioCallbackUnregister	VBVMR_AudioCallbackUnregister;
 
+	T_VBVMR_MacroButton_IsDirty		VBVMR_MacroButton_IsDirty;
+	T_VBVMR_MacroButton_GetStatus	VBVMR_MacroButton_GetStatus;
+	T_VBVMR_MacroButton_SetStatus	VBVMR_MacroButton_SetStatus;
+
 } T_VBVMR_INTERFACE, *PT_VBVMR_INTERFACE, *LPT_VBVMR_INTERFACE;
 
 #ifdef VBUSE_LOCALLIB
@@ -787,6 +855,93 @@ typedef struct tagVBVMR_INTERFACE
 
 
 
+
+/******************************************************************************/
+/*                                VBAN RT PACKET                              */
+/******************************************************************************/
+
+#pragma pack(1)
+
+// COMPATIBILITY: defined structure cannot be changed.
+// some field could be added at the end of the structure to keep the compatibility in the time.  
+
+typedef struct tagVBAN_VMRT_PACKET
+{
+	unsigned char voicemeeterType;			// 1 = Voicemeeter, 2= Voicemeeter Banana, 3 Potato
+	unsigned char reserved;					// unused
+	unsigned short buffersize;				// main stream buffer size
+	unsigned long voicemeeterVersion;		// version like for VBVMR_GetVoicemeeterVersion() functino
+	unsigned long optionBits;				// unused
+	unsigned long samplerate;				// main stream samplerate
+	short inputLeveldB100[34];				// pre fader input peak level in dB * 100
+	short outputLeveldB100[64];				// bus output peak level in dB * 100
+	unsigned long TransportBit;				// Transport Status
+	unsigned long stripState[8];			// Strip Buttons Status (see MODE bits below)
+	unsigned long busState[8];				// Bus Buttons Status (see MODE bits below)
+	short stripGaindB100Layer1[8];			// Strip Gain in dB * 100 
+	short stripGaindB100Layer2[8];
+	short stripGaindB100Layer3[8];
+	short stripGaindB100Layer4[8];
+	short stripGaindB100Layer5[8];
+	short stripGaindB100Layer6[8];
+	short stripGaindB100Layer7[8];
+	short stripGaindB100Layer8[8];
+	short busGaindB100[8];					// Bus Gain in dB * 100 
+	char stripLabelUTF8c60[8][60];			// Strip Label
+	char busLabelUTF8c60[8][60];			// Bus Label
+} T_VBAN_VMRT_PACKET, *PT_VBAN_VMRT_PACKET, *LPT_VBAN_VMRT_PACKET;
+
+#define expected_size_T_VBAN_VMRT_PACKET  1384 //1436 max
+
+#pragma pack()
+
+#define VMRTSTATE_MODE_MUTE			0x00000001
+#define VMRTSTATE_MODE_SOLO			0x00000002
+#define VMRTSTATE_MODE_MONO			0x00000004
+#define VMRTSTATE_MODE_MUTEC		0x00000008
+
+#define VMRTSTATE_MODE_MIXDOWN		0x00000010
+#define VMRTSTATE_MODE_REPEAT		0x00000020
+#define VMRTSTATE_MODE_MIXDOWNB		0x00000030
+#define VMRTSTATE_MODE_COMPOSITE	0x00000040
+#define VMRTSTATE_MODE_UPMIXTV		0x00000050
+#define VMRTSTATE_MODE_UPMIX2		0x00000060
+#define VMRTSTATE_MODE_UPMIX4		0x00000070
+#define VMRTSTATE_MODE_UPMIX6		0x00000080
+#define VMRTSTATE_MODE_CENTER		0x00000090
+#define VMRTSTATE_MODE_LFE			0x000000A0
+#define VMRTSTATE_MODE_REAR			0x000000B0
+
+#define VMRTSTATE_MODE_MASK			0x000000F0
+
+#define VMRTSTATE_MODE_EQ			0x00000100
+#define VMRTSTATE_MODE_CROSS		0x00000200
+#define VMRTSTATE_MODE_EQB			0x00000800
+
+#define VMRTSTATE_MODE_BUSA			0x00001000
+#define VMRTSTATE_MODE_BUSA1		0x00001000
+#define VMRTSTATE_MODE_BUSA2		0x00002000
+#define VMRTSTATE_MODE_BUSA3		0x00004000
+#define VMRTSTATE_MODE_BUSA4		0x00008000
+#define VMRTSTATE_MODE_BUSA5		0x00080000
+
+#define VMRTSTATE_MODE_BUSB			0x00010000
+#define VMRTSTATE_MODE_BUSB1		0x00010000
+#define VMRTSTATE_MODE_BUSB2		0x00020000
+#define VMRTSTATE_MODE_BUSB3		0x00040000
+
+#define VMRTSTATE_MODE_PAN0			0x00000000
+#define VMRTSTATE_MODE_PANCOLOR		0x00100000
+#define VMRTSTATE_MODE_PANMOD		0x00200000
+#define VMRTSTATE_MODE_PANMASK		0x00F00000
+
+#define VMRTSTATE_MODE_POSTFX_R		0x01000000
+#define VMRTSTATE_MODE_POSTFX_D		0x02000000
+#define VMRTSTATE_MODE_POSTFX1		0x04000000
+#define VMRTSTATE_MODE_POSTFX2		0x08000000
+
+#define VMRTSTATE_MODE_SEL			0x10000000
+#define VMRTSTATE_MODE_MONITOR		0x20000000
 
 
 
@@ -802,8 +957,9 @@ void * VBVMR_GetRequestVB0STREAMPTR(void);
 
 long VBVMR_SetParametersWEx(unsigned short * szParamScript, long fCopyToClient);
 
+long VBVMR_LoginEx(long properties);
 
-
+long VBVMR_MB_PushSettings(void * lpParam);
 
 
 

@@ -30,6 +30,7 @@ void WaitForUpdate()
 	{
 		Sleep(50);
 	}
+	Sleep(50);
 	while (iVMR.VBVMR_IsParametersDirty())
 	{
 		Sleep(50);
@@ -37,8 +38,10 @@ void WaitForUpdate()
 	Sleep(50);
 }
 
+
 int GetParameterFloat(char* param, float* cur)
 {
+	WaitForUpdate();
 	return iVMR.VBVMR_GetParameterFloat(param, cur);
 }
 
@@ -58,6 +61,7 @@ int SetParameters(char* param)
 
 int GetParameters(char* param, char* output)
 {
+	WaitForUpdate();
 	int ret = iVMR.VBVMR_GetParameterStringA(param, output);
 	if (ret != 0)
 	{
@@ -279,6 +283,8 @@ long InitializeDLLInterfaces(void)
 
 	iVMR.VBVMR_IsParametersDirty = (T_VBVMR_IsParametersDirty)GetProcAddress(G_H_Module, "VBVMR_IsParametersDirty");
 	iVMR.VBVMR_GetParameterFloat = (T_VBVMR_GetParameterFloat)GetProcAddress(G_H_Module, "VBVMR_GetParameterFloat");
+	iVMR.VBVMR_MacroButton_IsDirty = (T_VBVMR_MacroButton_IsDirty)GetProcAddress(G_H_Module, "VBVMR_MacroButton_IsDirty");
+
 	iVMR.VBVMR_GetParameterStringA = (T_VBVMR_GetParameterStringA)GetProcAddress(G_H_Module, "VBVMR_GetParameterStringA");
 	iVMR.VBVMR_GetParameterStringW = (T_VBVMR_GetParameterStringW)GetProcAddress(G_H_Module, "VBVMR_GetParameterStringW");
 	iVMR.VBVMR_GetLevel = (T_VBVMR_GetLevel)GetProcAddress(G_H_Module, "VBVMR_GetLevel");
@@ -327,6 +333,8 @@ long InitializeDLLInterfaces(void)
 	if (iVMR.VBVMR_Input_GetDeviceNumber == NULL) return -33;
 	if (iVMR.VBVMR_Input_GetDeviceDescA == NULL) return -34;
 	if (iVMR.VBVMR_Input_GetDeviceDescW == NULL) return -35;
+	if (iVMR.VBVMR_IsParametersDirty == NULL) return -36;
+
 
 #ifdef VMR_INCLUDE_AUDIO_PROCESSING_EXAMPLE
 	if (iVMR.VBVMR_AudioCallbackRegister == NULL) return -40;
