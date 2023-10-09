@@ -2,7 +2,10 @@
 
 ## License
 
-This is for free non-commercial or educational use only. Please see https://www.vb-audio.com/Services/developers.htm for more information on the license restrictions regarding the VoiceMeeterRemote API that is used by this project.
+This is for free non-commercial or educational use.
+Since March 2021 it is also free to use the Voicemeeter Remote API in professional or commercial projects.
+
+Please see https://www.vb-audio.com/Services/developers.htm for more information on the license regarding the VoiceMeeterRemote API that is used by this project.
 
 ## Usage
 
