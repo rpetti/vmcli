@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VBAudioVoicemeeterMacroButtonConfig>
+<MacroButtonConfiguration>
+	<MacroButton index='23' type='0' color='0' key='0' ctrl='0' shift='0' alt='0' anyway='0' exclusive='0' trigger='0' xinput='0' >
+		<MB_MIDI b1='00' b2='00' b3='00' b4='00' b5='00' b6='00' />
+		<MB_TRIGGER tchannel='0' tin='-20.0' tout='-20.0' tmsHold='1000' tafterMute='0' />
+		<MB_XINPUT nctrl='0' nbutton='0' />
+		<MB_GPIO ninput='0' />
+		<VBHIDMapItem name='Button#23' id='MBhid23' device='' vendor='0' product='0' version='0' uspa='0' us='0' nbb='0' code1='0' code2='0' code3='0' type='0' mode='0'></VBHIDMapItem>
+		<MB_Name>(Un)Mute 2 3</MB_Name>
+		<MB_Subname>Mimic 1</MB_Subname>
+		<MB_InitRequest></MB_InitRequest>
+		<MB_OnRequest>System.Execute("%windir%\system32\cmd.exe","C:\MyPrograms\vmcli","/C mutem.cmd");</MB_OnRequest>
+		<MB_OffRequest></MB_OffRequest>
+	</MacroButton>
+</MacroButtonConfiguration>
+</VBAudioVoicemeeterMacroButtonConfig>

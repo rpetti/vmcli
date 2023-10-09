@@ -28,3 +28,10 @@ Sets up the routing and gainlayers (SEL) I use when in an on-line meeting.
 
 Sets up the routing and gainlayers (SEL) I normally use.
 
+### MacroButton_mutem.xml
+
+A Macrobutton definition that executes the script C:\MyPrograms\vmcli\mutem.cmd
+
+![Load it into a button.](/examples/mb_load.png)
+
+
